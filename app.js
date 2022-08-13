@@ -1,10 +1,12 @@
 const path = require('path')
 const express = require('express')
+const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const connectDB = require('./config/db')
 const exphbs = require('express-handlebars')
 const passport = require('passport')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')
 
 //Load config
 dotenv.config({path:'./config/config.env'})
@@ -30,6 +32,8 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
+    store:  MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    
    
 }))
 
@@ -44,6 +48,8 @@ app.use(express.static('public'))
 
 // Routes
 app.use('/', require('./routes/index'))
+app.use('/auth', require('./routes/auth'))
+app.use('/stories', require('./routes/stories'))
 
 const PORT = process.env.PORT || 3000
 
